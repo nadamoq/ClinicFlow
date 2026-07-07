@@ -18,18 +18,18 @@ class PatientController extends Controller
      */
     use AuthorizesRequests;
 
-    public $service;
+    
 
-    public function __construct(PatientService $service)
+    public function __construct(public PatientService $service)
     {
-        $this->service = $service;
+     
     }
 
 
     public function index(Request $request)
     {
         //
-        $patient=$this->service->list($request->all());
+        $patient=$this->service->list($request->all())->get();
 
         return response()->json($patient);
     }

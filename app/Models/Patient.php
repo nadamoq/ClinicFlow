@@ -18,7 +18,7 @@ class Patient extends Model
         'birth',
         'diabetes',
         'gender',
-        'Blood_type',
+        'blood_type',
         'procedure_id',
         'receptionist_id',
                             

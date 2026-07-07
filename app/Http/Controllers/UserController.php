@@ -66,5 +66,5 @@ class UserController extends Controller
         response()->json(['message'=>$deleted?'deleted successfuly':'error'],
         $deleted?Response::HTTP_OK:Response::HTTP_BAD_REQUEST);
     }
-  
+    
 }

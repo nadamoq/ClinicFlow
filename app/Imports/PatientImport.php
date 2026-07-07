@@ -41,7 +41,7 @@ class PatientImport implements ToModel ,WithHeadingRow
         }
         return Patient::firstOrCreate(
             [   
-               'name'=>$row['name'],               
+                'name'=>$row['name'],               
                 'email'=>$row['email'],
                 'birth'=>$birthDate,
                 'diabetes'=>$row['diabetes'],

@@ -7,8 +7,10 @@ namespace App\Models;
 use App\HasNotificationActions;
 use App\UploadImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 
@@ -72,7 +74,7 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
         
     }
-    public function image(){
+    public function image():Relation{
 
         return $this->morphOne(Image::class,'imageable');
 
@@ -96,6 +98,12 @@ class User extends Authenticatable
 
         return $this->role==self::ROLE_ADMIN;
         
+    }
+    public function getAvatarAttribute()
+    {
+        return $this->image?->path 
+        ? Storage::url($this->image->path) 
+        : 'https://lh3.googleusercontent.com/aida-public/AB6AXuBeD_KqYYOFATqI1NAzdL4mTNkx9QuXXHElMUQrdgeLghf6pdOrd9UNvztF1qcEX58cLO1sdzR6bE0mjEkJp-MM6qhV0CB4tZLd9WyRVcqmB7w1vf2-E4ZsMK2uyzG7hjaO-NrD3lipKOqKkNONEFGdVR2Es-l4RdmnDqi5Ho9SlNbnQ2oU690afB9yzsloabQofcU9b6meC_CxGYCejdch8OzXJF2DlrvvfzE0E-rdRpBGtb_VGfK6';
     }
   
 }

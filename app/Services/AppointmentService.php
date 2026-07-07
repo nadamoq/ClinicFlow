@@ -43,8 +43,7 @@ class AppointmentService
             $this->data['supervisor_id']=$this->user->student->supervisor_id;
             if($result=$this->checkConflict()) return $result;
 
-            //email for patient
-
+            
             $this->data['student_id']=$this->user->id;      
             $this->data['status']='pending';
 

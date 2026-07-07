@@ -29,9 +29,10 @@ class StorePatientRequest extends FormRequest
             'birth'=>'required',
             'diabetes'=>'required',
             'gender'=>'required|in:male,female',
-            'Blood_type'=>'required|alpha|in:A,B,AB,O',
+            'blood_type'=>'required|in:A,B,AB,O',
             'procedure_id'=>'required|exists:procedures,id',
-            'image'=>'nullable|mimes:png,jpg|max:2024'
+            'image'=>'nullable|mimes:png,jpg,jpeg|max:2024',
+            'alt_txt'=>'nullable|string|max:255'
             ];
     }
 }

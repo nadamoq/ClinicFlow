@@ -28,7 +28,7 @@ class UpdatePatientRequest extends FormRequest
             'birth'=>'sometimes|date_format:Y-m-d',
             'diabetes'=>'sometimes',
             'gender'=>'sometimes|in:male,female',
-            'Blood_type'=>'sometimes|alpha|in:A,B,AB,O',
+            'blood_type'=>'sometimes|in:A,B,AB,O',
             'procedure_id'=>'sometimes|exists:procedures,id',
             'image'=>'nullable|mimes:png,jpg|max:2024'
         ];

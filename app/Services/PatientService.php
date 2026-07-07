@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Filters\PatientFilter;
-
 use App\Models\Patient;
+use App\UploadImage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PatientService{
 
- use AuthorizesRequests;
+ use AuthorizesRequests,UploadImage;
 
     public function list($filters){
 
@@ -22,13 +22,12 @@ class PatientService{
         $query=$filter->apply($query,$filters);
 
       
-        return $query->get();
+        return $query;
 
     }
     public function store( array $data) {
 
         $this->authorize('create',Patient::class);
-
 
         $data['receptionist_id'] = auth()->user()->id;
 
@@ -37,7 +36,7 @@ class PatientService{
         if(!empty($data['image'])){
 
             $result=  $patient->upload( $data['image'] , 'public' );
-            $patient->image()->create( [ 'alt_txt' => $result ['alt_txt'] ,'path' => $result['path'] ] );
+            $patient->image()->create( [ 'alt_txt' => $data['alt_txt'] ?? $result ['alt_txt'] ,'path' => $result['path'] ] );
         }
         return $patient;
 

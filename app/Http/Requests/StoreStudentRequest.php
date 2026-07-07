@@ -25,7 +25,7 @@ class StoreStudentRequest extends FormRequest
             //
             'gender'=>'required|string|in:female,male',
             'birth'=>'required|date_format:Y-m-d',
-            'mobile' => ['required', 'regex:/^(?:\+970|0)(59|56)\d{7}$/'],
+            'mobile' => ['required', 'string'],
             'supervisor_id'=>'required|exists:supervisors,id',
            
         ];

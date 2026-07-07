@@ -26,7 +26,7 @@ class StoreUserRequest extends FormRequest
             //
             'name'=>'required|string|min:3',
             'email'=>'required|unique:users,email|email',
-            'password'=>['required','confirmed','string',Password::min(3)->max(40)->letters()->symbols()->uncompromised()],
+            'password'=>['required','string',Password::min(3)->max(40)->letters()->symbols()->uncompromised()],
             'role'=>'required|string|in:admin,supervisor,student,receptionist'
         ];
     }

@@ -17,7 +17,7 @@ class Appointment extends Model
         'supervisor_id',
         'patient_id',
         'student_id',
-        'room_id'
+        
     ];
 
       public function student(){
@@ -40,17 +40,14 @@ class Appointment extends Model
             return $this->hasOne(Evaluation::class);
         
         }   
-       public function room() {
-
-           return $this->belongsTo(Room::class);
-
-        }
+      
         public function scopePending($query){
 
             return $query->where('status','pending');
         
         }
         public function scopeConflict($query,$date,$start ,$end ,$supervisor_id){
+            
             return $query->where('date',$date)
             ->where('supervisor_id',$supervisor_id)
             ->where(function($q) use ($start,$end){
