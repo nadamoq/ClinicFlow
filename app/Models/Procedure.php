@@ -2,27 +2,32 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Procedure extends Model
 {
     //
-    protected $fillable=[
+    use HasFactory;
+    
+    protected $fillable = [
         'name',
         'description',
         'duration_minutes',
-        'price'
+        'price',
     ];
-                        
-    public function patients(){
+
+    public function patients()
+    {
 
         return $this->hasMany(Patient::class);
 
     }
-    public function image(){
 
-        return $this->morphOne(Image::class,'imageable');
+    public function image()
+    {
+
+        return $this->morphOne(Image::class, 'imageable');
 
     }
-    
 }

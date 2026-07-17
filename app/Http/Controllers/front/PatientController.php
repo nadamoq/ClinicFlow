@@ -15,10 +15,11 @@ class PatientController extends Controller
     /**
      * Display a listing of the resource.
      */
-
-    public function index( Request $request, PatientService $service) {
+    public function index(Request $request, PatientService $service)
+    {
         //
-        $patients= $service->list($request->all())->paginate(10);
+        $patients = $service->list($request->all())->paginate(10);
+
         return view('patients.index', compact('patients'));
     }
 
@@ -29,6 +30,7 @@ class PatientController extends Controller
     {
         //
         $procedures = Procedure::all();
+
         return view('patients.create', compact('procedures'));
     }
 
@@ -40,11 +42,18 @@ class PatientController extends Controller
         //
 
         $patient = $service->store($request->validated());
-        if (!$patient) {
+        if (! $patient) {
             return redirect()->back()->with('error', 'Failed to create patient.');
-        } return redirect()->route('dashboard.patients.index')->with('success', 'Patient CREATED successfully');
+        }
+
+        return redirect()->route('dashboard.patients.index')->with('success', 'Patient CREATED successfully');
     }
 
+    public function show(Patient $patient)
+    {
+
+        return view('appointments.create', ['patient' => $patient->load('image')]);
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -52,7 +61,7 @@ class PatientController extends Controller
     public function edit(Patient $patient)
     {
         //
-        return view('patients.edit', ['patient' =>$patient, 'procedures' => Procedure::all()]);
+        return view('patients.edit', ['patient' => $patient, 'procedures' => Procedure::all()]);
     }
 
     /**
@@ -62,6 +71,7 @@ class PatientController extends Controller
     {
         //
         $service->update($patient, $request->validated());
+
         return redirect()->route('dashboard.patients.index')->with('success', 'Patient updated successfully');
     }
 
@@ -72,6 +82,7 @@ class PatientController extends Controller
     {
         //
         $service->delete($patient);
+
         return redirect()->route('dashboard.patients.index')->with('success', 'Patient deleted successfully');
     }
 }

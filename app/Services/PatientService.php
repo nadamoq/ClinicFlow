@@ -7,66 +7,76 @@ use App\Models\Patient;
 use App\UploadImage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class PatientService{
+class PatientService
+{
+    use AuthorizesRequests, UploadImage;
 
- use AuthorizesRequests,UploadImage;
+    public function list($filters)
+    {
 
-    public function list($filters){
+        $this->authorize('viewAny', Patient::class);
 
-        $this->authorize('viewAny',Patient::class);
+        $user = auth()->user();
+        $query = Patient::query();
 
-        $query=Patient::query();
+        if ($user->isStudent()) {
 
-        $filter=new PatientFilter();
-        
-        $query=$filter->apply($query,$filters);
+            $query->withoutAppointment();
+        } elseif ($user->isSupervisor()) {
+            $query->whereHas('appointment', function ($q) use ($user) {
+                $q->where('supervisor_id', $user->supervisor?->id);
+            });
+        }
+        $filter = new PatientFilter;
+        $query = $filter->apply($query, $filters);
 
-      
         return $query;
-
     }
-    public function store( array $data) {
 
-        $this->authorize('create',Patient::class);
+    public function store(array $data)
+    {
+
+        $this->authorize('create', Patient::class);
 
         $data['receptionist_id'] = auth()->user()->id;
 
-        $patient= Patient::create($data);
+        $patient = Patient::create($data);
 
-        if(!empty($data['image'])){
+        if (! empty($data['image'])) {
 
-            $result=  $patient->upload( $data['image'] , 'public' );
-            $patient->image()->create( [ 'alt_txt' => $data['alt_txt'] ?? $result ['alt_txt'] ,'path' => $result['path'] ] );
+            $result = $patient->upload($data['image'], 'public');
+            $patient->image()->create(['alt_txt' => $data['alt_txt'] ?? $result['alt_txt'], 'path' => $result['path']]);
         }
+
         return $patient;
-
     }
 
-    public function update( Patient $patient , array $data )
+    public function update(Patient $patient, array $data)
     {
-        $this->authorize('update',$patient);
+        $this->authorize('update', $patient);
 
-        $updated=$patient->update($data);
+        $updated = $patient->update($data);
 
-        if(!empty($data['image'])){
+        if (! empty($data['image'])) {
 
-           $result= $patient->upload($data['image'],'public');
+            $result = $patient->upload($data['image'], 'public');
 
-            $patient->image()->updateOrCreate(['alt_txt'=>$result['alt_txt'],'path'=>$result['path']]);
+            $patient->image()->updateOrCreate(['alt_txt' => $result['alt_txt'], 'path' => $result['path']]);
         }
 
-       return $updated;
+        return $updated;
     }
-    public function delete(Patient $patient){
 
-        $this->authorize('delete',$patient);
-        $deleted=$patient->delete();
-        if($patient->image){
+    public function delete(Patient $patient)
+    {
 
-            $patient->deleteImage('public',$patient->image->path);
+        $this->authorize('delete', $patient);
+        $deleted = $patient->delete();
+        if ($patient->image) {
 
+            $patient->deleteImage('public', $patient->image->path);
         }
+
         return $deleted;
     }
-
 }

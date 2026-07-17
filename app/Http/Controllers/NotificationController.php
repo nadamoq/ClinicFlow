@@ -4,37 +4,45 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\NotificationResource;
 
-
 class NotificationController extends Controller
 {
     //
-    public function index(){
+    public function index()
+    {
 
-        $notifications=auth()->user()->notifications()->get();
+        $notifications = auth()->user()->notifications()->get();
 
         return NotificationResource::collection($notifications);
 
     }
-    public function markAllAsRead(){
 
-       return  NotificationResource::collection(auth()->user()->markAllAsRead());
-      
-    }
-    public function markAsRead($id){
+    public function markAllAsRead()
+    {
 
-       return new NotificationResource(auth()->user()->markAsRead($id));
+        return NotificationResource::collection(auth()->user()->markAllAsRead());
 
     }
-    public function unread(){
-       
-        return  NotificationResource::collection(auth()->user()->getUnreadNotification());
+
+    public function markAsRead($id)
+    {
+
+        return new NotificationResource(auth()->user()->markAsRead($id));
 
     }
-    public function delete($id){
+
+    public function unread()
+    {
+
+        return NotificationResource::collection(auth()->user()->getUnreadNotification());
+
+    }
+
+    public function delete($id)
+    {
 
         auth()->user()->deleteNotification($id);
 
-        return response()->json(['message'=>'deleted successfully']);
-        
+        return response()->json(['message' => 'deleted successfully']);
+
     }
 }

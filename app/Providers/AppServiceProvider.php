@@ -27,9 +27,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        Gate::policy(Evaluation::class, EvaluationPolicy::class);
         Schema::defaultStringLength(191);
         Patient::observe(PatientObserver::class);
         Evaluation::observe(EvaluationObserver::class);
-        
+
     }
 }

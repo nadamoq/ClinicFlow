@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreReceptionistRequest extends FormRequest
@@ -17,15 +18,15 @@ class StoreReceptionistRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             //
-            'office_number'=>'required|regex:/^Bk\d{3}$/',
-            'location'=>'nullable|string|max:20',
-           
+            'office_number' => 'required|regex:/^Bk\d{3}$/',
+            'location' => 'nullable|string|max:20',
+
         ];
     }
 }

@@ -16,14 +16,12 @@ class EvaluationObserver
     public function created(Evaluation $evaluation): void
     {
         //
-        Log::alert('evaluation is made',[
-            'id'=>$evaluation->id,
-            'mark'=>$evaluation->mark,
-            'supervisor_id'=>$evaluation->appointment->supervisor_id,
-            'appointment_id'=>$evaluation->appointment_id
+        Log::alert('evaluation is made', [
+            'id' => $evaluation->id,
+            'mark' => $evaluation->mark,
+            'supervisor_id' => $evaluation->appointment->supervisor_id,
+            'appointment_id' => $evaluation->appointment_id,
         ]);
-        Notification::send(User::find($evaluation->appointment->student_id),new EvalutedStudentNotification($evaluation));
+        Notification::send(User::find($evaluation->appointment->student_id), new EvalutedStudentNotification($evaluation));
     }
-
-
 }

@@ -10,7 +10,8 @@ class DeleteExpiredPatient extends Command
 {
     /**
      * The name and signature of the console command.
-     
+
+     *
      * @var string
      */
     protected $signature = 'app:delete-expired-patient';
@@ -28,14 +29,13 @@ class DeleteExpiredPatient extends Command
     public function handle()
     {
         //
-        $three_months_ago=Carbon::now()->subMonths(3);
-        
+        $three_months_ago = Carbon::now()->subMonths(3);
+
         Patient::with([
-                    'appointment'=>fn($q)=>$q->completed()
-                                ->get()
-                    ])                      
-                    ->where('created_at','<=',$three_months_ago)
-                    ->delete();
+            'appointment' => fn ($q) => $q->completed()
+                ->get(),
+        ])
+            ->where('created_at', '<=', $three_months_ago)
+            ->delete();
     }
-                   
 }

@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\AppointmentCreated;
-
 use Illuminate\Support\Facades\Log;
 
 class AppointmentLogListener
@@ -22,10 +21,10 @@ class AppointmentLogListener
     public function handle(AppointmentCreated $event): void
     {
         //
-        $appointment=$event->appointment;
-        
-        Log::info(" new Appointment created ",[
-            
+        $appointment = $event->appointment;
+
+        Log::info(' new Appointment created ', [
+
             'id' => $appointment->id,
             'patient' => $appointment->patient_id,
             'student' => $appointment->student_id,

@@ -8,7 +8,6 @@ use App\Models\Patient;
 use App\Services\PatientService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Request;
-
 use Symfony\Component\HttpFoundation\Response;
 
 class PatientController extends Controller
@@ -18,22 +17,15 @@ class PatientController extends Controller
      */
     use AuthorizesRequests;
 
-    
-
-    public function __construct(public PatientService $service)
-    {
-     
-    }
-
+    public function __construct(public PatientService $service) {}
 
     public function index(Request $request)
     {
         //
-        $patient=$this->service->list($request->all())->get();
+        $patient = $this->service->list($request->all())->get();
 
         return response()->json($patient);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -41,9 +33,9 @@ class PatientController extends Controller
     public function store(StorePatientRequest $request)
     {
         //
-        $patient=$this->service->store($request->validated());
-      
-        return response()->json( $patient->load('image') , Response::HTTP_CREATED );
+        $patient = $this->service->store($request->validated());
+
+        return response()->json($patient->load('image'), Response::HTTP_CREATED);
     }
 
     /**
@@ -52,22 +44,20 @@ class PatientController extends Controller
     public function show(Patient $patient)
     {
         //
-        $this->authorize('view',$patient);
+        $this->authorize('view', $patient);
 
-        return response()->json($patient??Response::HTTP_NOT_FOUND); 
+        return response()->json($patient ?? Response::HTTP_NOT_FOUND);
     }
 
- 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdatePatientRequest $request, Patient $patient)
     {
         //
-        $updated=$this->service->update($patient,$request->validated());
+        $updated = $this->service->update($patient, $request->validated());
 
-        return response()->json(['message'=>$updated?'Updated successfully':'Error']
-        ,$updated?Response::HTTP_OK:Response::HTTP_INTERNAL_SERVER_ERROR);
+        return response()->json(['message' => $updated ? 'Updated successfully' : 'Error'], $updated ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR);
 
     }
 
@@ -77,9 +67,9 @@ class PatientController extends Controller
     public function destroy(Patient $patient)
     {
         //
-        $deleted=$this->service->delete($patient);
-        return response()->json(['message'=>$deleted>0?'Deleted successfully':'Error']
-        ,$deleted>0?Response::HTTP_OK:Response::HTTP_INTERNAL_SERVER_ERROR);
-   
+        $deleted = $this->service->delete($patient);
+
+        return response()->json(['message' => $deleted > 0 ? 'Deleted successfully' : 'Error'], $deleted > 0 ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR);
+
     }
 }

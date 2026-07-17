@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAppointmentRequest extends FormRequest
@@ -17,16 +18,16 @@ class StoreAppointmentRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             //
-            'date'=>'required|date_format:Y-m-d',
-            'start_time'=>'required|date_format:H:i',          
-            'patient_id'=>'required|exists:patients,id',
-            
+            'date' => 'required|date_format:Y-m-d',
+            'start_time' => 'required|date_format:H:i',
+            'patient_id' => 'required|exists:patients,id',
+
         ];
     }
 }

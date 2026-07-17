@@ -13,8 +13,8 @@ return new class extends Migration
     {
         //
         Schema::table('images', function (Blueprint $table) {
-            $table->dropMorphs('image');  
-            $table->morphs('imageable');  
+            $table->dropMorphs('image');
+            $table->morphs('imageable');
         });
 
     }

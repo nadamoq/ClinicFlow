@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateStudentRequest extends FormRequest
@@ -11,23 +12,22 @@ class UpdateStudentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user->isStudent()||auth()->user->isAdmin();
+        return auth()->user->isStudent() || auth()->user->isAdmin();
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             //
-            'gender'=>'required|in:male,female',
-            'birth'=>'required|date_format:Y-m-d',
-            'mobile'=>['required', 'regex:/^(?:\+970|0)(59|56)\d{7}$/'],
-            'supervisor_id'=>'required|exists:supervisors,id',
-        
+            'gender' => 'required|in:male,female',
+            'birth' => 'required|date_format:Y-m-d',
+            'mobile' => ['required', 'regex:/^(?:\+970|0)(59|56)\d{7}$/'],
+            'supervisor_id' => 'required|exists:supervisors,id',
 
         ];
     }

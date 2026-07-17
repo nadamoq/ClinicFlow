@@ -7,14 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Image extends Model
 {
     //
-     protected $fillable = [
-       
-        'path',
-        'alt_txt'
-    ];
-    public function imageable(){
+    protected $fillable = [
 
-      return  $this->morphTo();
-        
+        'path',
+        'alt_txt',
+    ];
+
+    public function imageable()
+    {
+
+        return $this->morphTo();
+
     }
 }

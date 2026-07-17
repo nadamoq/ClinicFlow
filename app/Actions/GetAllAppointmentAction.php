@@ -6,21 +6,26 @@ use App\Models\Appointment;
 
 class GetAllAppointmentAction
 {
-    public function  execute()  {
+    public function execute(?string $search = null)
+    {
+        $user = auth()->user();
 
-          if(auth()->user()->isStudent()){
+        $appointments = Appointment::with('patient');
 
-            $appointments= Appointment::where('student_id',auth()->user()->id)->get();
-
-        }elseif(auth()->user()->isSupervisor()){
-
-            $appointments=Appointment::where('supervisor_id',auth()->user()->supervisor->id)->get();
-
-        }else{
-
-            $appointments=Appointment::all();
+        if ($user->isStudent()) {
+            $appointments->where('student_id', $user->id);
+        } elseif ($user->isSupervisor()) {
+            $appointments->where('supervisor_id', $user->supervisor->id);
+        } elseif ($user->isReceptionist()) {
+            $appointments->pending();
         }
-        return $appointments;
-        
+
+        $appointments->when($search, function ($query, $searchTerm) {
+            $query->whereHas('patient', function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%'.$searchTerm.'%');
+            });
+        });
+
+        return $appointments->latest();
     }
 }

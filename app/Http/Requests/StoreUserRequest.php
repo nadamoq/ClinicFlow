@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -18,16 +19,16 @@ class StoreUserRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             //
-            'name'=>'required|string|min:3',
-            'email'=>'required|unique:users,email|email',
-            'password'=>['required','string',Password::min(3)->max(40)->letters()->symbols()->uncompromised()],
-            'role'=>'required|string|in:admin,supervisor,student,receptionist'
+            'name' => 'required|string|min:3',
+            'email' => 'required|unique:users,email|email',
+            'password' => ['required', 'string', Password::min(3)->max(40)->letters()->symbols()->uncompromised()],
+            'role' => 'required|string|in:admin,supervisor,student,receptionist',
         ];
     }
 }

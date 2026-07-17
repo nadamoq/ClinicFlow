@@ -78,20 +78,19 @@
                         <label class="font-label-md text-label-md text-on-surface-variant" for="bloodType">Blood
                             Type</label>
 
-                        <!-- تم حذف الـ name المكرر والاعتماد على blood_type فقط -->
-                        <select name="blood_type"
+                        <select name="Blood_type"
                             class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-body-md"
                             id="bloodType">
 
                             <!-- جعل خيار الاختيار الافتراضي يعمل مع الـ old value بشكل صحيح -->
-                            <option disabled {{ old('blood_type') == '' ? 'selected' : '' }} value="">Select blood
+                            <option disabled  value="">Select blood
                                 type</option>
-
+                               
                             <!-- استخدام old() للحفاظ على القيمة عند حدوث خطأ في الـ Validation -->
-                            <option {{ old('blood_type') == 'A' ? 'selected' : '' }} value="A">A</option>
-                            <option {{ old('blood_type') == 'B' ? 'selected' : '' }} value="B">B</option>
-                            <option {{ old('blood_type') == 'AB' ? 'selected' : '' }} value="AB">AB</option>
-                            <option {{ old('blood_type') == 'O' ? 'selected' : '' }} value="O">O</option>
+                            <option @selected(old('Blood_type')=='A'||$patient->Blood_type=='A') value="A">A</option>
+                            <option @selected(old('Blood_type')=='B'||$patient->Blood_type=='B') value="B">B</option>
+                            <option @selected(old('Blood_type')=='AB'||$patient->Blood_type=='AB')  value="AB">AB</option>
+                            <option @selected(old('Blood_type')=='O'||$patient->Blood_type=='O')  value="O">O</option>
 
                         </select>
                     </div>

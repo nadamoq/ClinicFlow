@@ -153,9 +153,116 @@
                     margin-left: 260px;
                 }
             }
+
+            /* Image Zoom Modal Styles */
+            .image-zoom-modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                animation: fadeIn 0.3s ease;
+            }
+
+            .image-zoom-modal.active {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .image-zoom-content {
+                position: relative;
+                background-color: white;
+                padding: 20px;
+                border-radius: 12px;
+                max-width: 90vw;
+                max-height: 90vh;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+                animation: zoomIn 0.3s ease;
+            }
+
+            .image-zoom-content img {
+                max-width: 100%;
+                max-height: 80vh;
+                object-fit: contain;
+                border-radius: 8px;
+            }
+
+            .image-zoom-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 36px;
+                height: 36px;
+                background-color: rgba(0, 0, 0, 0.8);
+                border: none;
+                border-radius: 50%;
+                color: white;
+                font-size: 28px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s ease;
+            }
+
+            .image-zoom-close:hover {
+                background-color: rgba(0, 0, 0, 0.95);
+            }
+
+            .zoom-trigger {
+                cursor: zoom-in;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .zoom-trigger:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes zoomIn {
+                from {
+                    transform: scale(0.9);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
         </style>
     @endpush
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface">Patient Management</h2>
+            <p class="text-on-surface-variant">Manage your clinical records and patient information.</p>
+        </div>
+        @can('create',App\models\Patient::class)
+            
+        <div class="flex items-center gap-3">
+            <a href="{{ route('dashboard.patients.create') }}"
+                class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-dark transition-all">
+                <span class="material-symbols-outlined">person_add</span>
+                Add Patient
+            </a>
+        </div>
+        @endcan
 
+    </div>
 
 
     <!-- Desktop Search and Filter Header -->
@@ -201,6 +308,14 @@
                 Diabetic
             </a>
         </div>
+        <a href="{{ route('dashboard.patients.export') }}"
+            class="flex items-center justify-center gap-xs px-md h-12 bg-surface-container-lowest text-on-surface-variant hover:text-green-600 dark:hover:text-green-400 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all font-label-md text-label-md shadow-sm"
+            title="Export to Excel">
+            <span class="material-symbols-outlined text-[22px] text-green-600 dark:text-green-400">
+                file_download
+            </span>
+            <span class="hidden sm:inline">Export Excel</span>
+        </a>
     </div>
 
     <div class="bg-surface rounded-2xl border border-outline-variant/50 clinical-shadow overflow-hidden">
@@ -229,7 +344,8 @@
                                     @if ($patient->image)
                                         <img src="{{ asset('storage/' . $patient->image->path) }}"
                                             alt="{{ $patient->image->alt_txt ?? $patient->name }}"
-                                            class="w-10 h-10 rounded-full object-cover border border-outline-variant/50">
+                                            class="w-10 h-10 rounded-full object-cover border border-outline-variant/50 zoom-trigger"
+                                            onclick="openImageZoom(this.src, '{{ $patient->image->alt_txt ?? $patient->name }}')">
                                     @else
                                         <div
                                             class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary font-bold uppercase text-sm">
@@ -273,19 +389,29 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <form class='hidden' action="{{ route('dashboard.patients.destroy', $patient) }}"id='delete-{{$patient->id}}'
+                                <form class='hidden'
+                                    action="{{ route('dashboard.patients.destroy', $patient) }}"id='delete-{{ $patient->id }}'
                                     method="POST">
                                     @csrf
                                     @method('DELETE')
                                 </form>
-                                <button onclick="document.getElementById('delete-{{$patient->id}}').submit()" class="p-2 text-outline hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined">delete</span>
-                                </button>
+                                @if (auth()->user()->role == 'student')
+                                    <a href="{{ route('dashboard.patients.show', $patient->id) }}"
+                                        class="p-2 text-outline hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined">add</span>
+                                    </a>
+                                @else
+                                    <button onclick="document.getElementById('delete-{{ $patient->id }}').submit()"
+                                        class="p-2 text-outline hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
 
-                                <a href="{{ route('dashboard.patients.edit', $patient) }}"
-                                    class="p-2 text-outline hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </a>
+                                    <a href="{{ route('dashboard.patients.edit', $patient) }}"
+                                        class="p-2 text-outline hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </a>
+                                @endif
+
                             </td>
                         </tr>
                     @empty
@@ -306,4 +432,43 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Zoom Modal -->
+    <div id="imageZoomModal" class="image-zoom-modal">
+        <div class="image-zoom-content">
+            <button class="image-zoom-close" onclick="closeImageZoom()">&times;</button>
+            <img id="zoomImageContent" src="" alt="Zoomed patient image">
+        </div>
+    </div>
+
+    <script>
+        function openImageZoom(imageSrc, altText) {
+            const modal = document.getElementById('imageZoomModal');
+            const zoomImage = document.getElementById('zoomImageContent');
+            zoomImage.src = imageSrc;
+            zoomImage.alt = altText;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageZoom() {
+            const modal = document.getElementById('imageZoomModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside the image
+        document.getElementById('imageZoomModal')?.addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeImageZoom();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageZoom();
+            }
+        });
+    </script>
 </x-layouts.main>

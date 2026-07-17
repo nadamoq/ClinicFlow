@@ -19,7 +19,7 @@ class PatientAppointmentNotification extends Notification implements ShouldQueue
     public function __construct($appointment)
     {
         //
-        $this->appointment=$appointment;
+        $this->appointment = $appointment;
     }
 
     /**
@@ -36,7 +36,7 @@ class PatientAppointmentNotification extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
-    {   
+    {
         return (new MailMessage)
             ->line('Your appointment is Booked')
             ->line("Your fee is :$notifiable->fee")

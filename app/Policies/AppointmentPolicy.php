@@ -4,8 +4,6 @@ namespace App\Policies;
 
 use App\Models\Appointment;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
-use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 
 class AppointmentPolicy
 {
@@ -14,7 +12,7 @@ class AppointmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isStudent()||$user->isAdmin()||$user->isSupervisor();
+        return true;
     }
 
     /**
@@ -22,9 +20,9 @@ class AppointmentPolicy
      */
     public function view(User $user, Appointment $appointment): bool
     {
-        return ($user->isStudent()&&$appointment->student_id==$user->id)
-        ||$user->isAdmin()
-        ||($user->isSupervisor()&&$appointment->supervisor_id==$user->supervisor->id);
+        return ($user->isStudent() && $appointment->student_id == $user->id)
+        || $user->isAdmin()
+        || ($user->isSupervisor() && $appointment->supervisor_id == $user->supervisor->id);
     }
 
     /**
@@ -40,7 +38,7 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment): bool
     {
-        return ($user->isStudent()&&$appointment->student_id==$user->id);
+        return $user->isStudent() && $appointment->student_id == $user->id;
     }
 
     /**
@@ -48,7 +46,7 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        return (($user->isStudent()&&$appointment->student_id==$user->id)||$user->isAdmin());
+        return ($user->isStudent() && $appointment->student_id == $user->id) || $user->isAdmin();
     }
 
     /**
@@ -65,5 +63,20 @@ class AppointmentPolicy
     public function forceDelete(User $user, Appointment $appointment): bool
     {
         return false;
+    }
+
+    public function updateStatus(User $user, Appointment $appointment)
+    {
+        return $user->id === $appointment->student_id || $user->hasRole('admin');
+
+        if ($appointment->status === 'completed') {
+            return false;
+        }
+
+        if ($appointment->status === 'pending') {
+            return in_array(request('status'), ['processing', 'canceled']);
+        }
+
+        return true;
     }
 }

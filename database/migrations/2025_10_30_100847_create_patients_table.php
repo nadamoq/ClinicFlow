@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('email');
             $table->date('birth');
             $table->boolean('diabetes');
-            $table->enum('gender',['male','female']);
-            $table->enum('Blood_type',['A','B','O','AB']);
+            $table->enum('gender', ['male', 'female']);
+            $table->enum('Blood_type', ['A', 'B', 'O', 'AB']);
             $table->foreignId('procedure_id')->constrained('procedures')->cascadeOnDelete();
             $table->foreignId('receptionist_id')->constrained('receptionists')->nullOnDelete();
             $table->timestamps();

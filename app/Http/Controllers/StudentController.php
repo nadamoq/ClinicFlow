@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Student;
-
 use Illuminate\Http\Response;
 
 class StudentController extends Controller
@@ -16,11 +15,10 @@ class StudentController extends Controller
     public function index()
     {
         //
-        $students=Student::all();
+        $students = Student::all();
+
         return response()->json($students);
     }
-
- 
 
     /**
      * Store a newly created resource in storage.
@@ -28,8 +26,9 @@ class StudentController extends Controller
     public function store(StoreStudentRequest $request)
     {
         //
-        $student= Student::create($request->validated());
-        return response()->json(['message'=>"created Successfuly $student"]);
+        $student = Student::create($request->validated());
+
+        return response()->json(['message' => "created Successfuly $student"]);
 
     }
 
@@ -48,20 +47,18 @@ class StudentController extends Controller
     public function update(UpdateStudentRequest $request, Student $student)
     {
         //
-        
-       $updated= $student->update($request->validated());
 
-       if($request->hasFile('image')){
+        $updated = $student->update($request->validated());
 
-        $result = $student->user->upload($request->file('image'),'public');
+        if ($request->hasFile('image')) {
 
-        $student->image()->updateOrCreate(['path'=>$result['path'],'alt_txt'=>'student']);
+            $result = $student->user->upload($request->file('image'), 'public');
 
-       }
+            $student->image()->updateOrCreate(['path' => $result['path'], 'alt_txt' => 'student']);
 
-       return response()->json(['message'=>$updated?'profile updated successfully':'error']
-       ,$updated?Response::HTTP_OK:Response::HTTP_INTERNAL_SERVER_ERROR);
-          
+        }
+
+        return response()->json(['message' => $updated ? 'profile updated successfully' : 'error'], $updated ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR);
 
     }
 
@@ -72,6 +69,7 @@ class StudentController extends Controller
     {
         //
         $student->delete();
-        return response()->json(['message'=>'deleted successfully']);
+
+        return response()->json(['message' => 'deleted successfully']);
     }
 }

@@ -5,7 +5,6 @@ namespace App\Notifications;
 use App\Models\Evaluation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class EvalutedStudentNotification extends Notification implements ShouldQueue
@@ -20,7 +19,7 @@ class EvalutedStudentNotification extends Notification implements ShouldQueue
     public function __construct(Evaluation $evaluation)
     {
         //
-        $this->evaluation=$evaluation;
+        $this->evaluation = $evaluation;
     }
 
     /**
@@ -33,8 +32,6 @@ class EvalutedStudentNotification extends Notification implements ShouldQueue
         return ['database'];
     }
 
-    
-
     /**
      * Get the array representation of the notification.
      *
@@ -44,10 +41,11 @@ class EvalutedStudentNotification extends Notification implements ShouldQueue
     {
         return [
             //
-            'Student_id'=>$notifiable->id,
-            'student_name'=>$notifiable->name,
-            'mark'=>$this->evaluation->mark,
-            'appointment'=>$this->evaluation->appointment
+            'evaluation_id' => $this->evaluation->id,
+            'Student_id' => $notifiable->id,
+            'student_name' => $notifiable->name,
+            'mark' => $this->evaluation->mark,
+            'appointment' => $this->evaluation->appointment,
         ];
     }
 }

@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Middleware\RoleMiddleware;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Routing\Middleware\ValidateSignature;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,12 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
-       $middleware->alias([ 
-                            'role'=> App\Http\Middleware\RoleMiddleware::class,
-                            'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
-                            'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-                            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,]) ;
-    
+        $middleware->alias([
+            'role' => RoleMiddleware::class,
+            'signed' => ValidateSignature::class,
+            'throttle' => ThrottleRequests::class,
+            'verified' => EnsureEmailIsVerified::class, ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

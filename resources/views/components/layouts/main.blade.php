@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>ClinicFlow : {{ $title  }}</title>
+    <title>ClinicFlow : {{ $title }}</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
         rel="stylesheet" />
@@ -156,7 +156,7 @@
         }
     </style>
     @stack('style')
-    {{$headscript??""}}
+    {{ $headscript ?? '' }}
 </head>
 
 <body class="bg-background text-on-surface">
@@ -167,23 +167,31 @@
             <span
                 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim font-bold">ClinicFlow</span>
         </div>
-        <div class="flex items-center gap-md">
-            <div class="relative hidden md:flex items-center">
-                <span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
-                <input
-                    class="pl-10 pr-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:outline-none w-64"
-                    placeholder="Search patients..." type="text" />
-            </div>
-            <button
-                class="p-2 rounded-full hover:bg-surface-container dark:hover:bg-on-surface-variant transition-colors active:scale-95">
-                <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
-            </button>
-            <div class="h-8 w-8 rounded-full bg-primary-container overflow-hidden border border-outline-variant">
-                <img class="w-full h-full object-cover"
-                    data-alt="A professional headshot of a female clinic administrator with a warm smile, wearing a modern blue medical uniform in a bright, clean clinic environment. High-key lighting, minimalist background, clinical precision aesthetic."
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN3mGPWxz5wsLJIfzBjECz5iXMqFdSG6ACo6p-c6EYF1YuFa4WSaDx6miS5eIQ38TeRlFnOYaDH93ApJ2cnRNSjBjcYEnTlH8CDvCBwTYItfPTBwbyrCU1BoADMFTXJs-IABbSzy3MIYCvW_yBrip7nJI9dpZQgUyBtk7pOO35BcCE7Xmn0TU8diXKDblZILXOq3rs1FKmx71vx7WAzRoTzNMkLw5SYcQ_-Fo9N19jY0Jeyf7RhMDE" />
-            </div>
-        </div>
+        <div class="flex items-center gap-md justify-end"> 
+
+    {{-- Hide notifications for admins --}}
+    @if(auth()->user()->role !== 'admin')
+        <a href="{{ route('dashboard.notifications.index') }}" 
+           class="p-2 rounded-full hover:bg-surface-container dark:hover:bg-on-surface-variant transition-colors active:scale-95 relative flex items-center justify-center">
+            
+            <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+
+            {{-- Red Badge: Only visible if there are unread notifications --}}
+            @if(auth()->user()->unreadNotifications->count() > 0)
+                <span class="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-error border-2 border-white"></span>
+            @endif
+        </a>
+    @endif
+
+    {{-- Profile Avatar --}}
+    <div class="h-8 w-8 rounded-full bg-primary-container overflow-hidden border border-outline-variant">
+        <a href="{{ route('dashboard.users.show', auth()->user()->id) }}"> 
+            <img class="w-full h-full object-cover"
+                 src="{{auth()->user()->avatar}}" 
+                 alt="User Profile" />
+        </a>
+    </div>
+</div>
     </header>
     <div class="flex h-screen pt-16">
         <!-- NavigationDrawer -->
@@ -191,87 +199,186 @@
             class="h-full w-60 fixed left-0 top-16 bg-surface dark:bg-inverse-surface border-r border-outline-variant dark:border-outline hidden md:flex flex-col py-lg">
             <!-- Profile Header -->
             <div class="px-6 pb-6 mb-6 border-b border-outline-variant/30">
-                <div class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-primary">person</span>
+                <a href="{{ route('dashboard.users.show', auth()->user()->id) }}">
+                    <div class="flex items-center gap-3">
+
+                        <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">person</span>
+                        </div>
+                        <div>
+                            <p class="font-label-md text-label-md text-primary font-bold">{{ auth()->user()->name }}</p>
+                            <p class="text-[11px] text-on-surface-variant">{{ auth()->user()->role }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="font-label-md text-label-md text-primary font-bold">{{ auth()->user()->name }}</p>
-                        <p class="text-[11px] text-on-surface-variant">{{ auth()->user()->role }}</p>
-                    </div>
-                </div>
+                </a>
+
             </div>
             <!-- Nav Items -->
             <nav class="flex-1 space-y-1">
-                <a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-all duration-200"
-                    href="#">
-                    <span class="material-symbols-outlined mr-3">dashboard</span> Dashboard
+
+                <a href="{{ route('home') }}"
+                    class="flex items-center px-6 py-3 transition-all duration-200 font-label-md text-label-md
+       {{ request()->routeIs('home')
+           ? 'text-primary dark:text-primary-fixed-dim border-l-4 border-primary font-bold bg-primary-container/10'
+           : 'text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low' }}">
+                    <span class="material-symbols-outlined mr-3">dashboard</span> Home
                 </a>
-                <a class="flex items-center px-6 py-3 text-primary dark:text-primary-fixed-dim border-l-4 border-primary font-bold bg-primary-container/10 font-label-md text-label-md transition-all duration-200"
-                    href="#">
+
+                <a href="{{ route('dashboard.patients.index') }}"
+                    class="flex items-center px-6 py-3 transition-all duration-200 font-label-md text-label-md
+       {{ request()->routeIs('dashboard.patients.*')
+           ? 'text-primary dark:text-primary-fixed-dim border-l-4 border-primary font-bold bg-primary-container/10'
+           : 'text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low' }}">
                     <span class="material-symbols-outlined mr-3">person</span> Patients
                 </a>
-                <a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-all duration-200"
-                    href="#">
-                    <span class="material-symbols-outlined mr-3">medical_services</span> Doctors
-                </a>
-                <a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-all duration-200"
-                    href="#">
+
+                @if (auth()->user()->role === 'admin')
+                    <a href="{{ route('dashboard.users.index') }}"
+                        class="flex items-center px-6 py-3 transition-all duration-200 font-label-md text-label-md
+           {{ request()->routeIs('dashboard.users.*')
+               ? 'text-primary dark:text-primary-fixed-dim border-l-4 border-primary font-bold bg-primary-container/10'
+               : 'text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low' }}">
+                        <span class="material-symbols-outlined mr-3">medical_services</span> Users
+                    </a>
+                @endif
+
+
+                <a href="{{ route('dashboard.procedures.index') }}"
+                    class="flex items-center px-6 py-3 transition-all duration-200 font-label-md text-label-md
+       {{ request()->routeIs('dashboard.procedures.*')
+           ? 'text-primary dark:text-primary-fixed-dim border-l-4 border-primary font-bold bg-primary-container/10'
+           : 'text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low' }}">
                     <span class="material-symbols-outlined mr-3">list_alt</span> Procedures
                 </a>
-                <a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-all duration-200"
-                    href="#">
+
+
+                <a href="{{ route('dashboard.appointments.index') }}"
+                    class="flex items-center px-6 py-3 transition-all duration-200 font-label-md text-label-md
+                        {{ request()->routeIs('dashboard.appointments.*')
+                            ? 'text-primary dark:text-primary-fixed-dim border-l-4 border-primary font-bold bg-primary-container/10'
+                            : 'text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low' }}">
                     <span class="material-symbols-outlined mr-3">calendar_month</span> Appointments
                 </a>
+                @if (!auth()->user()->isReceptionist())
+                    <a href="{{ route('dashboard.evaluations.index') }}"
+                        class="flex items-center px-6 py-3 transition-all duration-200 font-label-md text-label-md
+                    {{ request()->routeIs('dashboard.evaluations.*')
+                        ? 'text-primary dark:text-primary-fixed-dim border-l-4 border-primary font-bold bg-primary-container/10'
+                        : 'text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low' }}">
+                        <span class="material-symbols-outlined mr-3">assignment</span> Evaluations
+                    </a>
+                @endif
+
                 <a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-all duration-200"
-                    href="#">
-                    <span class="material-symbols-outlined mr-3">assignment</span> Evaluations
-                </a>
-                <a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-all duration-200"
-                    href="#">
+                    href="{{route('dashboard.notifications.index')}}">
                     <span class="material-symbols-outlined mr-3">notifications</span> Notifications
                 </a>
                 <a class="flex items-center px-6 py-3 text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-all duration-200"
-                    href="#">
-                    <span class="material-symbols-outlined mr-3">settings</span> Settings
+                    href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <span class="material-symbols-outlined mr-3">logout</span>logout
                 </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                    @csrf
+                </form>
             </nav>
         </aside>
         <!-- Main Content Area -->
         <main class="flex-1 ml-0 md:ml-60 bg-background overflow-y-auto px-gutter py-xl md:px-xl">
-            {{$slot}}
+            {{ $slot }}
         </main>
     </div>
     <!-- Mobile Navigation (BottomNavBar) -->
+    @php
+        // تعريف التنسيقات مرة واحدة لسهولة التعديل وقراءة الكود
+        $activeClass =
+            'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1';
+        $inactiveClass = 'text-on-surface-variant dark:text-surface-variant px-4 py-1';
+    @endphp
+
     <nav
-        class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-surface dark:bg-inverse-surface border-t border-outline-variant dark:border-outline shadow-lg z-50 rounded-t-xl">
-        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant"
-            href="#">
-            <span class="material-symbols-outlined">home</span>
+        class="md:hidden fixed bottom-0 left-0 w-full flex justify-start sm:justify-around items-center px-4 py-2 bg-surface dark:bg-inverse-surface border-t border-outline-variant dark:border-outline shadow-lg z-50 rounded-t-xl overflow-x-auto gap-4 scrollbar-hide">
+
+        <a class="flex flex-col items-center justify-center min-w-max transition-all duration-200 {{ request()->routeIs('home') ? $activeClass : $inactiveClass }}"
+            href="{{ route('home') }}">
+            <span class="material-symbols-outlined">dashboard</span>
             <span class="font-label-sm text-label-sm-mobile">Home</span>
         </a>
-        <a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1"
-            href="#">
-            <span class="material-symbols-outlined">group</span>
+
+        <a class="flex flex-col items-center justify-center min-w-max transition-all duration-200 {{ request()->routeIs('dashboard.patients.*') ? $activeClass : $inactiveClass }}"
+            href="{{ route('dashboard.patients.index') }}">
+            <span class="material-symbols-outlined">person</span>
             <span class="font-label-sm text-label-sm-mobile">Patients</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant"
-            href="#">
-            <span class="material-symbols-outlined">event</span>
-            <span class="font-label-sm text-label-sm-mobile">Calendar</span>
-        </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant"
-            href="#">
-            <span class="material-symbols-outlined">medical_information</span>
+
+        @if (auth()->user()->role === 'admin')
+            <a class="flex flex-col items-center justify-center min-w-max transition-all duration-200 {{ request()->routeIs('dashboard.users.*') ? $activeClass : $inactiveClass }}"
+                href="{{ route('dashboard.users.index') }}">
+                <span class="material-symbols-outlined">medical_services</span>
+                <span class="font-label-sm text-label-sm-mobile">Users</span>
+            </a>
+        @endif
+
+        <a class="flex flex-col items-center justify-center min-w-max transition-all duration-200 {{ request()->routeIs('dashboard.procedures.*') ? $activeClass : $inactiveClass }}"
+            href="{{ route('dashboard.procedures.index') }}">
+            <span class="material-symbols-outlined">list_alt</span>
             <span class="font-label-sm text-label-sm-mobile">Procedures</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant"
-            href="#">
-            <span class="material-symbols-outlined">menu</span>
-            <span class="font-label-sm text-label-sm-mobile">Menu</span>
+
+        <a class="flex flex-col items-center justify-center min-w-max transition-all duration-200 {{ request()->routeIs('dashboard.appointments.*') ? $activeClass : $inactiveClass }}"
+            href="{{ route('dashboard.appointments.index') }}">
+            <span class="material-symbols-outlined">calendar_month</span>
+            <span class="font-label-sm text-label-sm-mobile">Appointments</span>
         </a>
+
+        @if (!auth()->user()->isReceptionist())
+            <a class="flex flex-col items-center justify-center min-w-max transition-all duration-200 {{ request()->routeIs('dashboard.evaluations.*') ? $activeClass : $inactiveClass }}"
+                href="{{ route('dashboard.evaluations.index') }}">
+                <span class="material-symbols-outlined">assignment</span>
+                <span class="font-label-sm text-label-sm-mobile">Evaluations</span>
+            </a>
+        @endif
+
+        <a class="flex flex-col items-center justify-center min-w-max transition-all duration-200 {{ $inactiveClass }}"
+            href="#">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="font-label-sm text-label-sm-mobile">Alerts</span>
+        </a>
+
+        <a class="flex flex-col items-center justify-center min-w-max transition-all duration-200 {{ $inactiveClass }}"
+            href="{{ route('logout') }}"
+            onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();">
+            <span class="material-symbols-outlined">logout</span>
+            <span class="font-label-sm text-label-sm-mobile">Logout</span>
+        </a>
+
+        <form id="logout-form-mobile" action="{{ route('logout') }}" method="POST" class="hidden">
+            @csrf
+        </form>
+
     </nav>
-   @stack('script')
+    @stack('script')
+    <script>
+        // Micro-interactions and Form Validation Logic
+
+
+        // Hover effect for side nav items
+        const navItems = document.querySelectorAll('aside nav a');
+        navItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                if (!item.classList.contains('text-primary')) {
+                    item.querySelector('.material-symbols-outlined').style.fontVariationSettings =
+                        "'FILL' 1";
+                }
+            });
+            item.addEventListener('mouseleave', () => {
+                if (!item.classList.contains('text-primary')) {
+                    item.querySelector('.material-symbols-outlined').style.fontVariationSettings =
+                        "'FILL' 0";
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

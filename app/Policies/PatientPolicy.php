@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Patient;
 use App\Models\User;
 
-
 class PatientPolicy
 {
     /**
@@ -21,7 +20,7 @@ class PatientPolicy
      */
     public function view(User $user, Patient $patient): bool
     {
-        return ($user->isStudent()&&$patient->appointment->is_null)||$user->isReceptionist()||$user->isAdmin();
+        return ($user->isStudent() && $patient->appointment->is_null) || $user->isReceptionist() || $user->isAdmin();
     }
 
     /**
@@ -29,7 +28,7 @@ class PatientPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isReceptionist()||$user->isAdmin();
+        return $user->isReceptionist() || $user->isAdmin();
     }
 
     /**
@@ -37,7 +36,7 @@ class PatientPolicy
      */
     public function update(User $user, Patient $patient): bool
     {
-         return $user->isReceptionist()||$user->isAdmin();
+        return $user->isReceptionist() || $user->isAdmin();
     }
 
     /**
@@ -45,7 +44,7 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        return $user->isReceptionist()||$user->isAdmin();
+        return $user->isReceptionist() || $user->isAdmin();
     }
 
     /**

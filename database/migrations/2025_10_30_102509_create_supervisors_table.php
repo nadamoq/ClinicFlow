@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('address')->nullable();
             $table->string('specialty');
-            $table->enum('university_degree',['Bachelor','master','Phd','prof']); 
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();                
+            $table->enum('university_degree', ['Bachelor', 'master', 'Phd', 'prof']);
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

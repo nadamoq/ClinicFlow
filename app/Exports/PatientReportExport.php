@@ -2,29 +2,34 @@
 
 namespace App\Exports;
 
-use App\Models\Patient;
 use App\Services\PatientFilterService;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class PatientReportExport implements FromCollection , WithHeadings ,WithMapping
+class PatientReportExport implements FromCollection, WithHeadings, WithMapping
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return Collection
+     */
     public $filters;
+
     public $service;
-    public function __construct($filters ,PatientFilterService $service)
+
+    public function __construct($filters, PatientFilterService $service)
     {
-        $this->filters=$filters;
-        $this->service=$service;
+        $this->filters = $filters;
+        $this->service = $service;
     }
+
     public function collection()
-    { 
-        $patient= $this->service->filterPatient($this->filters);
+    {
+        $patient = $this->service->filterPatient($this->filters);
+
         return $patient->get();
     }
+
     public function headings(): array
     {
         return [
@@ -39,6 +44,7 @@ class PatientReportExport implements FromCollection , WithHeadings ,WithMapping
         ];
 
     }
+
     public function map($row): array
     {
         return [
@@ -48,8 +54,8 @@ class PatientReportExport implements FromCollection , WithHeadings ,WithMapping
             $row->diabetes,
             $row->gender,
             $row->Blood_type,
-            $row-> procedure_id,
-            $row->receptionist_id?? 0
+            $row->procedure_id,
+            $row->receptionist_id ?? 0,
 
         ];
     }

@@ -20,7 +20,7 @@ class SupervisorAppointmentNotification extends Notification implements ShouldQu
     public function __construct(Appointment $appointment)
     {
         //
-        $this->appointment=$appointment;
+        $this->appointment = $appointment;
     }
 
     /**
@@ -44,18 +44,16 @@ class SupervisorAppointmentNotification extends Notification implements ShouldQu
     //         ->line('Thank you for using our application!');
     // }
 
-   public function toDatabase(object $notifiable)
+    public function toDatabase(object $notifiable)
     {
         return [
-            'supervisor_id'=>$notifiable->id,
-            'appointment_id'=>$this->appointment->id,
-            'student_id'=>$this->appointment->student_id,
-            'student_name'=>$this->appointment->student->name,
-            'start_time'=>$this->appointment->start_time,
-            'end_time'=>$this->appointment->end_time,
-            'date'=>$this->appointment->date,
+
+            'appointment_id' => $this->appointment->id,
+            'student_id' => $this->appointment->student_id,
+            'student_name' => $this->appointment->student->name,
+            'start_time' => $this->appointment->start_time,
+            'end_time' => $this->appointment->end_time,
+            'date' => $this->appointment->date,
         ];
     }
-   
-    
 }

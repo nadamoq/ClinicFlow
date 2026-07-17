@@ -120,7 +120,7 @@
                                     <select name="role" 
                                         class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md input-focus transition-all appearance-none cursor-pointer"
                                         id="roleSelector">
-                                        <option value="Default" disabled >Default</option>
+                                        <option value="Default"  >Default</option>
                                         <option value="student" @selected(old('role')=='student')>Student</option>
                                         <option value="supervisor" @selected(old('role')=='supervisor')>Supervisor</option>
                                         <option value="receptionist" @selected(old('role')=='receptionist')>Receptionist</option>
@@ -166,13 +166,10 @@
                                     <label class="text-label-md font-label-md text-on-surface-variant block">Supervisor
                                         ID</label>
                                         <select name="supervisor_id"
-                                        class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md input-focus transition-all appearance-none cursor-pointer"
-                                        id="roleSelector">
+                                        class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md input-focus transition-all appearance-none cursor-pointer">
 
                                         @foreach ($supervisors as $supervisor)
-
-                                            <option value="{{$supervisor->id}}" @selected(old('supervisor->id')=='{{$supervisor->id}}')>{{$supervisor->user->name}}</option>        
-
+                                            <option value="{{$supervisor->id}}" @selected(old('supervisor_id')==$supervisor->id)>{{$supervisor->user?->name??$supervisor->id}}</option>
                                         @endforeach
                                         
                                     </select>
@@ -184,7 +181,7 @@
                                 <div class="space-y-base">
                                     <label class="text-label-md font-label-md text-on-surface-variant block">University
                                         Degree</label>
-                                        'Bachelor','master','Phd','prof'
+                                        
                                         <select name="university_degree"
                                             class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md input-focus transition-all">
                                             <option value="Phd" @selected(old('university_degree')=='Phd')>Phd</option>
@@ -215,7 +212,7 @@
                                     <label class="text-label-md font-label-md text-on-surface-variant block">Office number</label>
                                     <input name="office_number" value="{{old('office_number')}}"
                                         class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md input-focus transition-all"
-                                        placeholder="E562" type="text" />
+                                        placeholder="Bk000" type="text" />
                                 </div>
                                 <div class="space-y-base">
                                     <label
@@ -254,14 +251,14 @@
             </div>
         </div>
     </div>
-    @push('script')
+
         <script>
             const roleSelector = document.getElementById('roleSelector');
             const panels = {
-                'Student': document.getElementById('panel-Student'),
-                'Supervisor': document.getElementById('panel-Supervisor'),
-                'Default': document.getElementById('panel-Default'),
-                'Receptionist': document.getElementById('panel-Receptionist') 
+                'student': document.getElementById('panel-Student'),
+                'supervisor': document.getElementById('panel-Supervisor'),
+                'receptionist': document.getElementById('panel-Receptionist'),
+                'Default': document.getElementById('panel-Default')
             };
 
             roleSelector.addEventListener('change', (e) => {
@@ -280,6 +277,11 @@
                 }
             });
 
+            // Show saved/selected role panel on page load
+            if (roleSelector.value) {
+                roleSelector.dispatchEvent(new Event('change'));
+            }
+
             // // Form Submission micro-interaction
             // document.getElementById('registrationForm').addEventListener('submit', (e) => {
             //     e.preventDefault();
@@ -295,5 +297,5 @@
             //     }, 1500);
             // });
         </script>
-    @endpush
+   
 </x-layouts.main>

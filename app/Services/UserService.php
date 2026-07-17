@@ -7,41 +7,36 @@ use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\StoreSupervisorRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Jobs\StoreProfile;
-use App\Models\Receptionist;
-use App\Models\Student;
-use App\Models\Supervisor;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-
-class UserService 
+class UserService
 {
-
-    public static function store(Request $request){
+    public static function store(Request $request)
+    {
 
         $request->validate((new StoreUserRequest)->rules());
 
-        match($request->role){
+        match ($request->role) {
 
             'student' => $request->validate((new StoreStudentRequest)->rules()),
             'supervisor' => $request->validate((new StoreSupervisorRequest)->rules()),
             'receptionist' => $request->validate((new StoreReceptionistRequest)->rules()),
             'default' => null
         };
-        
-        $user=User::create([
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role
+            'role' => $request->role,
         ]);
 
         $request['user_id'] = $user->id;
-        
-        StoreProfile::dispatch($user,$request->all());
-          
+
+        StoreProfile::dispatch($user, $request->all());
+
         return $user;
     }
-    
 }

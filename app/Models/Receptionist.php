@@ -2,27 +2,31 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Receptionist extends Model
 {
     //
-    protected $fillable=[
-        
+    use HasFactory;
+    protected $fillable = [
+
         'office_number',
         'location',
-        'user_id'   
+        'user_id',
     ];
-    
 
-     public function user(){
+    public function user()
+    {
 
         return $this->belongsTo(User::class);
 
     }
-     public function patients(){
+
+    public function patients()
+    {
 
         return $this->hasMany(Patient::class);
-        
+
     }
 }

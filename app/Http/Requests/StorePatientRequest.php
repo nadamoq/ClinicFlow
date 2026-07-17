@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePatientRequest extends FormRequest
@@ -11,28 +12,28 @@ class StorePatientRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        
-        return  ($this->user()->isReceptionist()||$this->user()->isAdmin());
+
+        return $this->user()->isReceptionist() || $this->user()->isAdmin();
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            
-            'name'=>'required|string|min:3',
-            'email'=>'required|email',
-            'birth'=>'required',
-            'diabetes'=>'required',
-            'gender'=>'required|in:male,female',
-            'blood_type'=>'required|in:A,B,AB,O',
-            'procedure_id'=>'required|exists:procedures,id',
-            'image'=>'nullable|mimes:png,jpg,jpeg|max:2024',
-            'alt_txt'=>'nullable|string|max:255'
-            ];
+
+            'name' => 'required|string|min:3',
+            'email' => 'required|email',
+            'birth' => 'required',
+            'diabetes' => 'required',
+            'gender' => 'required|in:male,female',
+            'Blood_type' => 'required|in:A,B,AB,O',
+            'procedure_id' => 'required|exists:procedures,id',
+            'image' => 'nullable|mimes:png,jpg,jpeg|max:2024',
+            'alt_txt' => 'nullable|string|max:255',
+        ];
     }
 }

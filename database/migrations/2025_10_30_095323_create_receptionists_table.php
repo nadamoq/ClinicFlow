@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->String('office_number');
             $table->String('location');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();           
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

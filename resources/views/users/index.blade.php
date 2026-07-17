@@ -193,16 +193,7 @@
                 @endforeach
             </div>
         </div>
-        <div class="flex items-center gap-sm">
-            <button class="flex items-center gap-xs px-md py-1.5 rounded-lg border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors">
-                <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                Advanced
-            </button>
-            <button class="flex items-center gap-xs px-md py-1.5 rounded-lg border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors">
-                <span class="material-symbols-outlined text-[18px]">file_download</span>
-                Export
-            </button>
-        </div>
+      
     </div>
 </div>
 

@@ -4,8 +4,6 @@ namespace App\Observers;
 
 use App\Models\Patient;
 use App\Notifications\PatientNotfication;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
 
 class PatientObserver
 {
@@ -15,9 +13,9 @@ class PatientObserver
     public function created(Patient $patient): void
     {
         //
-        
+
         $patient->notify(new PatientNotfication($patient));
-        
+
     }
 
     /**
@@ -26,8 +24,7 @@ class PatientObserver
     public function updated(Patient $patient): void
     {
         //
-         $patient->notify(new PatientNotfication($patient));
-        
-    }
+        $patient->notify(new PatientNotfication($patient));
 
+    }
 }

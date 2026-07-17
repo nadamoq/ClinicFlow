@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEvaluationRequest extends FormRequest
@@ -11,31 +12,31 @@ class StoreEvaluationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->isSupervisor();
+        return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             //
-            'mark'=>'required|numeric|Between:40.0,99.5',
-            'appointment_id'=>'required|exists:appointments,id|unique:evaluations,appointment_id',
-            'description'=>'nullable|filled|string'
+            'mark' => 'required|numeric|Between:40.0,99.5',
+            'appointment_id' => 'required|exists:appointments,id|unique:evaluations,appointment_id',
+            'description' => 'nullable|filled|string',
         ];
-       
 
+    }
 
-    } 
-    public function messages(){
-            return [ 
-                
-                'appointment_id.unique'=>'already evaluated'
-            
-            ];
-        }
+    public function messages()
+    {
+        return [
+
+            'appointment_id.unique' => 'already evaluated',
+
+        ];
+    }
 }

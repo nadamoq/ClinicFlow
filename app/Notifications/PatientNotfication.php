@@ -19,7 +19,7 @@ class PatientNotfication extends Notification implements ShouldQueue
     public function __construct($patient)
     {
         //
-        $this->patient=$patient;
+        $this->patient = $patient;
     }
 
     /**
@@ -29,16 +29,17 @@ class PatientNotfication extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['database','mail',];
+        return ['database', 'mail'];
     }
-// 
+
+    //
     /**
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('Be ready for your appointment  !')          
+            ->line('Be ready for your appointment  !')
             ->line("You are added to Clinic system $notifiable->name")
             ->line('Thank you for using our application!');
     }
@@ -52,8 +53,8 @@ class PatientNotfication extends Notification implements ShouldQueue
     {
         return [
             //
-            'patient_id'=>$this->patient->id,
-            'patient_name'=>$this->patient->name,
+            'patient_id' => $this->patient->id,
+            'patient_name' => $this->patient->name,
 
         ];
     }
