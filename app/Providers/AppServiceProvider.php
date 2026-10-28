@@ -32,5 +32,9 @@ class AppServiceProvider extends ServiceProvider
         Patient::observe(PatientObserver::class);
         Evaluation::observe(EvaluationObserver::class);
 
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 }
