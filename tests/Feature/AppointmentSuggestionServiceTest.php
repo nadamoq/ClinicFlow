@@ -12,7 +12,7 @@ use App\Models\Receptionist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Database\Seeders\ProcedureSeeder;
-use Symfony\Component\HttpFoundation\Response;
+
 use Tests\TestCase;
 
 class AppointmentSuggestionServiceTest extends TestCase

@@ -313,8 +313,7 @@
                          <td>
     <div class="flex items-center justify-end gap-2">
         
-        {{-- قسم أزرار تغيير الحالة (يظهر للموظف المسؤول فقط) --}}
-        @if (!$receptionist)
+        @if (!$receptionist && auth()->user()->isStudent())
             <div class="flex items-center gap-1.5 border-r border-gray-200 pr-2">
                 @if ($item->status === 'pending')
                     <form action="{{ route('dashboard.appointment.updateStatus', $item->id) }}" method="POST">
@@ -347,7 +346,6 @@
                 @endif
             </div>
 
-            {{-- قسم أزرار التعديل والحذف --}}
             @if ($item->status == 'pending')
                 <form class='hidden' action="{{ route('dashboard.appointments.destroy', $item->id) }}" id='delete-{{ $item->id }}' method="POST">
                     @csrf @method('DELETE')
@@ -361,7 +359,6 @@
             @endif
         @endif
 
-        {{-- زر المشاهدة (يظهر للجميع) --}}
         <a href="{{ route('dashboard.appointments.show', $item->id) }}" title="View Details"
            class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-primary-fixed hover:text-primary transition-all shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">

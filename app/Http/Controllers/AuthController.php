@@ -18,7 +18,10 @@ class AuthController extends Controller
 
             $token = $request->user()->createToken('userToken')->plainTextToken;
 
-            return response()->json("user logged in successfully + $token");
+            return response()->json([
+                        'token' => $token,
+                        'message' => 'user logged in successfully'
+                    ]);
         }
 
         return response()->json(['message' => 'wrong email or password'], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);

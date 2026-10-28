@@ -21,7 +21,7 @@ class PatientImport implements ToModel, WithHeadingRow
 
             try {
 
-                // because excel return date value as Numeric Sequence (we need to convert it to date Object)
+           
                 $birthDate = Date::excelToDateTimeObject($row['birth'])->format('Y-m-d');
 
             } catch (\Exception $e) {
